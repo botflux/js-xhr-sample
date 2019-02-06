@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS XHR Sample</title>
+</head>
+<body>
+    <h1>Here's a sample for XHR request</h1>
+    <script>
+        var request;
+
+        /**
+         * This instanciation take care of IE BUT if you want 
+         * a better compatibility you should handle other cases like
+         * mentions in this response : https://stackoverflow.com/a/415175
+         */
+        if (window.XMLHttpRequest) request = new XMLHttpRequest();
+        else request = new ActiveXObject('Microsoft.XMLHTTP');
+
+        /**
+         * For every state change, this function will be called.
+         */
+        request.onreadystatechange = function (event) {
+
+            if (request.readyState === XMLHttpRequest.UNSENT) {
+                console.log('The request is ready but the method "open()" hasn\'t been called yet.');
+            }
+
+            if (request.readyState === XMLHttpRequest.OPENED) {
+                console.log('The method "open()" has been called.');
+            }
+
+            if (request.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
+                console.log('The method "send()" has been called.');
+            }
+
+            if (request.readyState === XMLHttpRequest.LOADING) {
+                console.log('We are receiving the response, data are partialy available.');
+            }
+
+            /**
+             * If the request is done 
+             */
+            if (request.readyState === XMLHttpRequest.DONE) {
+                if (request.status === 200) {
+                    //console.log('Response receive: %s', request.responseText);
+                } else {
+                    console.log('Status de la résponse: %d (%s)', request.status, his.statusText);
+                }
+            }
+        };
+
+        /**
+         *  Every time we receive data from the response.
+         */
+        request.onprogress = function (event) {
+            if (event.lengthComputable) {
+                var percentComplete = (event.loaded / event.total)*100;
+                console.log("Downloading: %d%%", percentComplete);
+            } else {
+                console.log('Something went wrong when computing the request progress.');
+            }
+        };
+
+        /**
+         * When an error ocurred while receiving the data. 
+         */
+        request.onerror = function (event) {
+            console.error('An error ocurred while receiving the document: %s', event.target.status);
+        };
+
+        request.open('GET', 'https://jsonplaceholder.typicode.com/comments', true);
+        request.send(null);
+    </script>
+</body>
+</html>
